@@ -23,9 +23,9 @@ connection.connect(function(err){
 const promptMessages = async () => {
     try {
         let answer = await inquirer.prompt({
-            name: 'action',
+            name: 'userChoice',
             type: 'list',
-            message: 'What would you like to do?',
+            message: 'Pick an option',
             choices: [
                 'View Employees',
                 'View Departments',
@@ -37,7 +37,7 @@ const promptMessages = async () => {
                 'Exit'
             ]
         });
-        switch (answer.action) {
+        switch (answer.userChoice) {
             case 'View Employees':
                 employeeView();
                 break;
@@ -74,6 +74,141 @@ const promptMessages = async () => {
         console.log(err);
         promptMessages();
     }
+}
+
+const addDepartment = async () => {
+    try {
+        console.log("Add a department");
+
+        let answer = await inquirer.prompt([
+            {
+                name: 'departmentName',
+                type: 'input',
+                message: 'What is your department called?'
+            }
+        ]);
+
+        let results = await connection.query("INSERT INTO department SET ?", {
+            name: answer.departmentName
+        });
+
+        console.log(`${answer.departmentName} added to departments.`)
+        promptMessages();
+
+    } catch (err) {
+        console.log(err);
+        promptMessages();
+    };
+}
+
+const addEmployee = async () => {
+    try {
+        console.log('Add an employee');
+
+        let roles = await connection.query("SELECT * FROM role");
+
+        let managers = await connection.query("SELECT * FROM employee");
+
+        let answer = await inquirer.prompt([
+            {
+                name: 'firstName',
+                type: 'input',
+                message: "What is the employees first name?"
+            },
+            {
+                name: 'lastName',
+                type: 'input',
+                message: "What is the employees last name?"
+            },
+            {
+                name: 'employeeRoleId',
+                type: 'list',
+                choices: roles.map((role) => {
+                    return {
+                        name: role.title,
+                        value: role.id
+                    }
+                }),
+                message: "Please enter employees role ID"
+            },
+            {
+                name: 'employeeManagerId',
+                type: 'list',
+                choices: managers.map((manager) => {
+                    return {
+                        name: manager.first_name + " " + manager.last_name,
+                        value: manager.id
+                    }
+                }),
+                message: "Please enter employees manager ID?"
+            }
+        ])
+
+        let results = await connection.query("INSERT INTO employee SET ?", {
+            first_name: answer.firstName,
+            last_name: answer.lastName,
+            role_id: (answer.employeeRoleId),
+            manager_id: (answer.employeeManagerId)
+        });
+
+        console.log(`${answer.firstName} ${answer.lastName} added to employees.`);
+        promptMessages();
+
+    } catch (err) {
+        console.log(err);
+        promptMessages();
+    };
+}
+
+const addRole = async () => {
+    try {
+        console.log('Add role');
+
+        let departments = await connection.query("SELECT * FROM department")
+
+        let answer = await inquirer.prompt([
+            {
+                name: 'roleTitle',
+                type: 'input',
+                message: 'What is the new role called?'
+            },
+            {
+                name: 'salary',
+                type: 'input',
+                message: 'What is this roles salary?'
+            },
+            {
+                name: 'departmentId',
+                type: 'list',
+                choices: departments.map((departmentId) => {
+                    return {
+                        name: departmentId.name,
+                        value: departmentId.id
+                    }
+                }),
+                message: 'What department ID is this role associated with?',
+            }
+        ]);
+        
+        let selectedDepartment;
+        for (i = 0; i < departments.length; i++) {
+            if(departments[i].department_id === answer.choice) {
+                selectedDepartment = departments[i];
+            };
+        }
+        let results = await connection.query("INSERT INTO role SET ?", {
+            roleTitle: answer.roleTitle,
+            salary: answer.salary,
+            department_id: answer.departmentId
+        })
+
+        console.log(`${answer.roleTitle} role added successfully.`)
+        promptMessages();
+
+    } catch (err) {
+        console.log(err);
+        promptMessages();
+    };
 }
 
 const viewEmployees = async () => {
@@ -165,7 +300,7 @@ const updateEmployee = async () => {
 
         let results = await connection.query("UPDATE employee SET ? WHERE ?", [{ role_id: selectedRole.role }, { id: selectedEmployee.employee }]);
 
-        console.log(`The role was successfully updated.`);
+        console.log(`Employee role updated`);
         promptMessages();
 
     } catch (err) {
