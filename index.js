@@ -39,31 +39,31 @@ const promptMessages = async () => {
         });
         switch (answer.userChoice) {
             case 'View Employees':
-                employeeView();
+                viewEmployees();
                 break;
 
             case 'View Departments':
-                departmentView();
+                viewDepartments();
                 break;
 
             case 'View Roles':
-                roleView();
+                viewRoles();
                 break;
 
             case 'Add Employees':
-                employeeAdd();
+                addEmployee();
                 break;
 
             case 'Add Departments':
-                departmentAdd();
+                addDepartment();
                 break;
 
             case 'Add Roles':
-                roleAdd();
+                addRole();
                 break;
 
             case 'Update Employee Role':
-                employeeUpdate();
+                updateEmployee();
                 break;
 
             case 'Exit':
@@ -168,7 +168,7 @@ const addRole = async () => {
 
         let answer = await inquirer.prompt([
             {
-                name: 'roleTitle',
+                name: 'title',
                 type: 'input',
                 message: 'What is the new role called?'
             },
@@ -197,12 +197,12 @@ const addRole = async () => {
             };
         }
         let results = await connection.query("INSERT INTO role SET ?", {
-            roleTitle: answer.roleTitle,
+            title: answer.title,
             salary: answer.salary,
             department_id: answer.departmentId
         })
 
-        console.log(`${answer.roleTitle} role added successfully.`)
+        console.log(`${answer.title} role added successfully.`)
         promptMessages();
 
     } catch (err) {

@@ -1,6 +1,6 @@
 DROP DATABASE IF EXISTS employees_db;
 
-CREATE DATABASE employees;
+CREATE DATABASE employees_db;
 
 USE employees_db;
 
@@ -19,7 +19,7 @@ CREATE TABLE role (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE employees (
+CREATE TABLE employee (
   id INT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,

@@ -6,5 +6,24 @@
     "mysql2": "^2.3.3",
     "node": "^16.17.0",
     "util": "^0.12.4"
-  }
+  },
+  "name": "employee-tracker-real",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Santanamcf/employee-tracker-real.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Santanamcf/employee-tracker-real/issues"
+  },
+  "homepage": "https://github.com/Santanamcf/employee-tracker-real#readme"
 }
